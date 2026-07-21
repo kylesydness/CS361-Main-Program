@@ -1,6 +1,5 @@
 from tkmacosx import Button
 import tkinter as tk
-from tkinter import ttk, CENTER, BOTTOM, TOP
 
 # Colors:
 BG_COLOR = "#000000"
@@ -19,9 +18,9 @@ small_size = 20
 medium_size = 25
 large_size = 30
 
-slow_speed = 50
-medium_speed = 30
-fast_speed = 10
+slow_speed = 35
+medium_speed = 20
+fast_speed = 5
 
 FONT_SIZE = medium_size
 
@@ -31,7 +30,6 @@ FONT_SPEED = medium_speed
 def change_size(new_size):
     global FONT_SIZE
     FONT_SIZE = new_size
-
 
 def change_speed(new_speed):
     global FONT_SPEED
@@ -65,6 +63,12 @@ class TkinterApp(tk.Tk):
         frame = self.frames[name]
         if not last is None:
             frame.set_prev_screen(last, l_name)
+        children = []
+        for child in frame.winfo_children():
+            children.append(child)
+            child.destroy()
+        for c in children:
+            c.place(relx=c.number, rely=c.number)
         frame.tkraise()
 
 class screen(tk.Frame):
@@ -73,7 +77,7 @@ class screen(tk.Frame):
         self.configure(background=BG_COLOR)
 
         # HEADER
-        self.header = tk.Label(self, bg=BG_COLOR, fg=HEADER_COLOR, font=(HEADER_FONT, 60))
+        self.header = tk.Label(self, bg=BG_COLOR, fg=HEADER_COLOR, font=(HEADER_FONT, round(FONT_SIZE*2.5)))
 
         #MAIN TEXT:
         self.string = "Placeholder"
@@ -119,7 +123,7 @@ class screen(tk.Frame):
         self.back_button = Button(self,
                                   command=lambda: controller.show_frame(self.prev_screen),
                                   font=(BODY_FONT, FONT_SIZE - 5),
-                                  image=back_img, compound=TOP,
+                                  image=back_img, compound=tk.TOP,
                                   bg=SETTING_COLOR, fg=BODY_COLOR,
                                   activebackground=SETTING_SEL,
                                   highlightcolor=BODY_COLOR,
@@ -130,7 +134,7 @@ class screen(tk.Frame):
         # recap
         self.recap = Button(self,
                             text="Recap",
-                            image=recap_img, compound=TOP,
+                            image=recap_img, compound=tk.TOP,
                             bg=SETTING_COLOR, fg=BODY_COLOR,
                             font=(BODY_FONT, FONT_SIZE - 5),
                             activebackground=SETTING_SEL,
@@ -143,7 +147,7 @@ class screen(tk.Frame):
         self.text_button = Button(self,
                                     text="Text Settings",
                                     font=(BODY_FONT,FONT_SIZE-5),
-                                    image=text_img, compound=TOP,
+                                    image=text_img, compound=tk.TOP,
                                     bg=SETTING_COLOR, fg=BODY_COLOR,
                                     activebackground=SETTING_SEL,
                                     highlightcolor=BODY_COLOR,
@@ -155,7 +159,7 @@ class screen(tk.Frame):
         self.tutorial_button = Button(self,
                                         text="How to Play",
                                         font=(BODY_FONT, FONT_SIZE - 5),
-                                        image=tutorial_img, compound=TOP,
+                                        image=tutorial_img, compound=tk.TOP,
                                         bg=SETTING_COLOR, fg=BODY_COLOR,
                                         activebackground=SETTING_SEL,
                                         highlightcolor=BODY_COLOR,
@@ -197,11 +201,11 @@ class home_screen(screen):
         # tk.Frame.__init__(self, parent)
         # HEADER
         self.header.config(text="The Cryptic\nNecklace", font=(HEADER_FONT, 80))
-        self.header.place(relx=0.5, rely=0.3, anchor=CENTER)
+        self.header.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
 
         # DESCRIPTION
         self.description.config(text="Can you decypher what the necklace is before it's too late?")
-        self.description.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.description.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
         # MAIN CHOICE:
         self.start_button = Button(self,
@@ -214,7 +218,7 @@ class home_screen(screen):
                                  highlightthickness=2,
                                  padx=3, pady=3,
                                  overrelief=tk.SUNKEN)
-        self.start_button.place(relx=0.5, rely=0.7, anchor=CENTER)
+        self.start_button.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
         # OPTIONS
         #   tutorial
@@ -235,10 +239,10 @@ class tutor_screen(screen):
         self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
 
         # MAIN TEXT
-        self.string = ("The Cryptic Necklace is a text-based horror game that gives you the chance to be a character in your own horror story.\n"
-            "\nFor each story beat, text will be displayed, describing what is happening in the story. Using the button(s) below the displayed text, you can choose how to progress in the story. BEWARE! Once you make a decision, it cannot be undone, and it will affect what happens next.\n"
-            "\nIf you are unhappy with your decisions, you can exit the game at any time using the “Back to Home” button in the top left corner, but BE WARNED: you will lose all progress you’ve made!\n"
-            "\nUse the 'Recap' button* in the bottom left to see a summary of your previous choices. ")
+        self.string = """The Cryptic Necklace is a text-based horror game that gives you the chance to be a character in your own horror story.\n
+            \nFor each story beat, text will be displayed, describing what is happening in the story. Using the button(s) below the displayed text, you can choose how to progress in the story. BEWARE! Once you make a decision, it cannot be undone, and it will affect what happens next.\n
+            \nIf you are unhappy with your decisions, you can exit the game at any time using the “Back to Home” button in the top left corner, but BE WARNED: you will lose all progress you’ve made!\n
+            \nUse the "Recap" button* in the bottom left to see a summary of your previous choices. """
         self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
 
         # EXAMPLE CHOICES
@@ -256,12 +260,129 @@ class tutor_screen(screen):
         self.back_button.place(relx=0, rely=0, anchor=tk.NW)
         self.recap.place(relx=0, rely=1, anchor=tk.SW)
 
-class name_screen(screen):
+class text_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         #tk.Frame.__init__(self, parent)
+        
+        self.string = """This is an example of how fast the text will display. Select a different speed from the options below to determine your preferred display speed. """
+        
+        # SPEED SECTION:
+        # TEXT:
+        self.header.config(text="Text speed")
+        self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
+        self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
+        # OPTIONS:
+        self.slow_button = Button(self,text="Slow",
+                                  command=lambda: self.print_desc(1, slow_speed),
+                               fg=BODY_COLOR, bg=BUTTON_COLOR,
+                               bd=5,
+                               activebackground=SELECTED_COLOR,
+                               font=(BODY_FONT, FONT_SIZE),
+                               highlightthickness=2,
+                               padx=3, pady=3,
+                               overrelief=tk.SUNKEN)
+        self.slow_button.place(relx=0.4, rely=0.4, anchor=tk.NE)
 
-class text_screen(screen):
+        self.med_speed_button = Button(self, text="Medium",
+                                       command=lambda: self.print_desc(1, medium_speed),
+                                  fg=BODY_COLOR, bg=BUTTON_COLOR,
+                                  bd=5,
+                                  activebackground=SELECTED_COLOR,
+                                  font=(BODY_FONT, FONT_SIZE),
+                                  highlightthickness=2,
+                                  padx=3, pady=3,
+                                  overrelief=tk.SUNKEN)
+        self.med_speed_button.place(relx=0.5, rely=0.4, anchor=tk.N)
+
+        self.fast_button = Button(self, text="Fast",
+                                  command=lambda: self.print_desc(1, fast_speed),
+                                  fg=BODY_COLOR, bg=BUTTON_COLOR,
+                                  bd=5,
+                                  activebackground=SELECTED_COLOR,
+                                  font=(BODY_FONT, FONT_SIZE),
+                                  highlightthickness=2,
+                                  padx=3, pady=3,
+                                  overrelief=tk.SUNKEN)
+        self.fast_button.place(relx=0.6, rely=0.4, anchor=tk.NW)
+
+        #SIZE SECTION:
+        #TEXT:
+        self.header2 = tk.Label(self,
+                                text="Text Size",
+                                bg=BG_COLOR, fg=HEADER_COLOR,
+                                font=(HEADER_FONT, round(FONT_SIZE*2.5)))
+        self.header2.place(relx=0.5, rely=0.6, anchor=tk.N)
+
+        self.description2 = tk.Label(self,
+                                     text = "Select your preferred text size below:",
+                                     bg=BG_COLOR, fg=BODY_COLOR,
+                                     font=(BODY_FONT, FONT_SIZE),
+                                     wraplength=1100, justify=tk.LEFT)
+        self.description2.place(relx=0.115, rely=0.75, anchor=tk.NW)
+        # OPTIONS:
+        self.small_button = Button(self, text="Small",
+                                    command=lambda: self.resize(small_size),
+                                    fg=BODY_COLOR, bg=BUTTON_COLOR,
+                                    bd=5,
+                                    activebackground=SELECTED_COLOR,
+                                    font=(BODY_FONT, small_size),
+                                    highlightthickness=2,
+                                    padx=3, pady=3,
+                                    overrelief=tk.SUNKEN)
+        self.small_button.place(relx=0.4, rely=0.9, anchor=tk.E)
+
+        self.med_size_button = Button(self, text="Medium",
+                                        command=lambda: self.resize(medium_size),
+                                        fg=BODY_COLOR, bg=BUTTON_COLOR,
+                                        bd=5,
+                                        activebackground=SELECTED_COLOR,
+                                        font=(BODY_FONT, medium_size),
+                                        highlightthickness=2,
+                                        padx=3, pady=3,
+                                        overrelief=tk.SUNKEN)
+        self.med_size_button.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
+
+        self.large_button = Button(self, text="Large",
+                                    command=lambda: self.resize(large_size),
+                                    fg=BODY_COLOR, bg=BUTTON_COLOR,
+                                    bd=5,
+                                    activebackground=SELECTED_COLOR,
+                                    font=(BODY_FONT, large_size),
+                                    highlightthickness=2,
+                                    padx=3, pady=3,
+                                    overrelief=tk.SUNKEN)
+        self.large_button.place(relx=0.6, rely=0.9, anchor=tk.W)
+
+        # NAVIGATION:
+        self.back_button.place(relx=0, rely=0, anchor=tk.NW)
+
+    def print_desc(self, char: int = 1, font_speed=None):
+        if not font_speed is None:
+            change_speed(font_speed)
+            font_speed = None
+        self.description.config(text=self.string[:char])
+        if char < len(self.string):
+            root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
+
+    def resize(self, new_size):
+        if new_size != FONT_SIZE:
+            change_size(new_size)
+            for child in self.winfo_children():
+                child.config(font=(FONT_SIZE))
+            """self.header.config(font=(HEADER_FONT, round(FONT_SIZE*2.5)))
+            self.description.config(font=(BODY_FONT, FONT_SIZE))
+            self.slow_button.config(font=(BODY_FONT, FONT_SIZE))
+            self.med_speed_button.config(font=(BODY_FONT, FONT_SIZE))
+            self.fast_button.config(font=(BODY_FONT, FONT_SIZE))
+            self.header2.config(font=(HEADER_FONT, round(FONT_SIZE*2.5)))
+            self.description2.config(font=(BODY_FONT, FONT_SIZE))
+            self.small_button.config(font=(BODY_FONT, FONT_SIZE))
+            self.med_size_button.config(font=(BODY_FONT, FONT_SIZE))
+            self.large_button.config(font=(BODY_FONT, FONT_SIZE))
+            self.back_button.config(font=(BODY_FONT, FONT_SIZE-5))"""
+        
+class name_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         #tk.Frame.__init__(self, parent)
