@@ -3,23 +3,37 @@ import tkinter as tk
 from tkinter import ttk, CENTER, BOTTOM, TOP
 
 # Colors:
-bg_color = "#000000"
-header_color = "#FF2600"
-button_color = "#941100"
-selected_color = "#FF2600"
-body_color = "#FFFFFF"
-setting_color = "#111111"
-setting_sel = "#222222"
+BG_COLOR = "#000000"
+HEADER_COLOR = "#FF2600"
+BUTTON_COLOR = "#941100"
+SELECTED_COLOR = "#FF2600"
+BODY_COLOR = "#FFFFFF"
+SETTING_COLOR = "#111111"
+SETTING_SEL = "#222222"
 
 #Font styles:
-header_font = "Herculanum"
-body_font = "Bodoni 72"
+HEADER_FONT = "Herculanum"
+BODY_FONT = "Bodoni 72"
 
 small_size = 20
 medium_size = 25
 large_size = 30
 
-font_size = medium_size
+slow_speed = 50
+medium_speed = 30
+fast_speed = 10
+
+FONT_SIZE = medium_size
+
+FONT_SPEED = medium_speed
+
+def change_size(new_size):
+    global FONT_SIZE
+    FONT_SIZE = new_size
+    
+def change_speed(new_speed):
+    global FONT_SPEED
+    FONT_SPEED = new_speed
 
 class TkinterApp(tk.Tk):
     def __init__(self):
@@ -34,7 +48,7 @@ class TkinterApp(tk.Tk):
         display.pack(side="top", fill="both", expand=True)
         display.grid_rowconfigure(0, weight=1)
         display.grid_columnconfigure(0, weight=1)
-        self.configure(background=bg_color)
+        self.configure(background=BG_COLOR)
 
         self.frames = {}
 
@@ -51,18 +65,16 @@ class TkinterApp(tk.Tk):
             frame.set_prev_screen(last, l_name)
         frame.tkraise()
 
-
-
 class home_screen(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.configure(background=bg_color)
+        self.configure(background=BG_COLOR)
         # HEADER
-        header = tk.Label(self, text="The Cryptic\nNecklace", bg=bg_color, fg=header_color, font=(header_font, 80))
+        header = tk.Label(self, text="The Cryptic\nNecklace", bg=BG_COLOR, fg=HEADER_COLOR, font=(HEADER_FONT, 80))
         header.place(relx=0.5, rely=0.3, anchor=CENTER)
 
         # DESCRIPTION
-        description = tk.Label(self, text="Can you decypher what the necklace is before it's too late?", bg=bg_color, fg=body_color, font=(body_font, font_size))
+        description = tk.Label(self, text="Can you decypher what the necklace is before it's too late?", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE))
         description.place(relx=0.5, rely=0.5, anchor=CENTER)
 
         # Button images:
@@ -73,13 +85,12 @@ class home_screen(tk.Frame):
 
         # MAIN CHOICE:
         start_button = Button(self,
-                                 text="Start Game", command=lambda: controller.show_frame(name_screen, home_screen,
-                                                                                           "Home"),
-                                 fg=body_color,
+                                 text="Start Game", command=lambda: controller.show_frame(name_screen, home_screen, "Home"),
+                                 fg=BODY_COLOR,
                                  bd=5,
-                                 bg=button_color,
-                                 activebackground=selected_color,
-                                 font=(body_font,font_size),
+                                 bg=BUTTON_COLOR,
+                                 activebackground=SELECTED_COLOR,
+                                 font=(BODY_FONT,FONT_SIZE),
                                  highlightthickness=2,
                                  padx=3, pady=3,
                                  overrelief=tk.SUNKEN)
@@ -92,11 +103,11 @@ class home_screen(tk.Frame):
                                  command=lambda: controller.show_frame(tutor_screen, home_screen, "Home"),
                                  image=tutorial_img,
                                  compound=TOP,
-                                 bg=setting_color,
-                                 fg=body_color,
-                                 font=(body_font, font_size-5),
-                                 activebackground=setting_sel,
-                                 highlightcolor=body_color,
+                                 bg=SETTING_COLOR,
+                                 fg=BODY_COLOR,
+                                 font=(BODY_FONT, FONT_SIZE-5),
+                                 activebackground=SETTING_SEL,
+                                 highlightcolor=BODY_COLOR,
                                  overrelief=tk.SUNKEN,
                                  padx=0, pady=0)
         tutorial_button.place(relx=0.79, rely=0.82)
@@ -105,13 +116,13 @@ class home_screen(tk.Frame):
         text_button = Button(self,
                                  text="Text Settings",
                                  command=lambda: controller.show_frame(text_screen, home_screen, "Home"),
-                                 font=(body_font,font_size-5),
+                                 font=(BODY_FONT,FONT_SIZE-5),
                                  image=text_img,
                                  compound=TOP,
-                                 bg=setting_color,
-                                 fg=body_color,
-                                 activebackground=setting_sel,
-                                 highlightcolor=body_color,
+                                 bg=SETTING_COLOR,
+                                 fg=BODY_COLOR,
+                                 activebackground=SETTING_SEL,
+                                 highlightcolor=BODY_COLOR,
                                  overrelief=tk.SUNKEN,
                                  padx=0, pady=0)
         text_button.place(relx=0.89, rely=0.82)
@@ -119,46 +130,50 @@ class home_screen(tk.Frame):
 class tutor_screen(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.configure(background=bg_color)
+        self.configure(background=BG_COLOR)
 
         # HEADER
-        header = tk.Label(self, text="How to Play", bg=bg_color, fg=header_color, font=(header_font, 60))
+        header = tk.Label(self, text="How to Play", bg=BG_COLOR, fg=HEADER_COLOR, font=(HEADER_FONT, 60))
         header.place(relx=0.5, rely=0.05, anchor=tk.N)
 
-        # DESCRIPTION
-        description = tk.Label(self, text="The Cryptic Necklace is a text-based horror game that gives you the chance to be a character in your own horror story.\n\nFor each story beat, text will be displayed, describing what is happening in the story. Using the button(s) below the displayed text, you can choose how to progress in the story. BEWARE! Once you make a decision, it cannot be undone, and it will affect what happens next.\n\nIf you are unhappy with (your) decisions, you can exit the game at any time using the “Back to Home” button in the top right corner, but BE WARNED: you will lose all progress you’ve made!\n\nUse the 'Recap' button* in the bottom left to see a summary of your previous choices.", bg=bg_color,
-                               fg=body_color, font=(body_font, font_size), wraplength=1100, justify=tk.LEFT)
-        description.place(relx=0.5, rely=0.2, anchor=tk.N)
+        # MAIN TEXT
+        self.string = ("The Cryptic Necklace is a text-based horror game that gives you the chance to be a character "
+                       "in your own horror story.\n\nFor each story beat, text will be displayed, describing what is "
+                       "happening in the story. Using the button(s) below the displayed text, you can choose how to "
+                       "progress in the story. BEWARE! Once you make a decision, it cannot be undone, and it will "
+                       "affect what happens next.\n\nIf you are unhappy with your decisions, you can exit the game at any time using the “Back to Home” button in the top left corner, but BE WARNED: you will lose all progress you’ve made!\n\nUse the 'Recap' button* in the bottom left to see a summary of your previous choices. ")
+        self.description = tk.Label(self, bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE), wraplength=1100, justify=tk.LEFT)
+        self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
 
         # EXAMPLE CHOICES
-        choice_1 = Button(self,
+        self.choice_1 = Button(self,
                               text="Example\nchoice 1",
-                              fg=body_color,
+                              fg=BODY_COLOR,
                               bd=5,
-                              bg=button_color,
-                              activebackground=selected_color,
-                              font=(body_font, font_size),
+                              bg=BUTTON_COLOR,
+                              activebackground=SELECTED_COLOR,
+                              font=(BODY_FONT, FONT_SIZE),
                               highlightthickness=2,
                               padx=3, pady=3,
                               overrelief=tk.SUNKEN)
-        choice_1.place(relx=0.45, rely=0.75, anchor=tk.E)
-        choice_2 = Button(self,
+        #self.choice_1.place(relx=0.45, rely=0.75, anchor=tk.E)
+        self.choice_2 = Button(self,
                           text="Example\nchoice 2",
-                          fg=body_color,
+                          fg=BODY_COLOR,
                           bd=5,
-                          bg=button_color,
-                          activebackground=selected_color,
-                          font=(body_font, font_size),
+                          bg=BUTTON_COLOR,
+                          activebackground=SELECTED_COLOR,
+                          font=(BODY_FONT, FONT_SIZE),
                           highlightthickness=2,
                           padx=3, pady=3,
                           overrelief=tk.SUNKEN)
-        choice_2.place(relx=0.55, rely=0.75, anchor=tk.W)
+        #self.choice_2.place(relx=0.55, rely=0.75, anchor=tk.W)
         # RECAP NOTE
         recap_note = tk.Label(self,
                                text="*The recap button on this page is display only, and is not clickable.",
-                               bg=bg_color,
-                               fg=body_color, font=(body_font, font_size), wraplength=1100, justify=tk.LEFT)
-        recap_note.place(relx=0.5, rely=.95, anchor=tk.S)
+                               bg=BG_COLOR,
+                               fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE), wraplength=1100, justify=tk.LEFT)
+        recap_note.place(relx=0.1, rely=.95, anchor=tk.SW)
         # Button images:
         back_img = tk.PhotoImage(file="Buttons/back_button.png").subsample(2,2)
         recap_img = tk.PhotoImage(file="Buttons/recap_button.png").subsample(2,2)
@@ -171,15 +186,14 @@ class tutor_screen(tk.Frame):
         # OPTIONS
         # back
         self.back_button = Button(self,
-                                 text=f"Back to\n{self.prev_name}",
                                  command=lambda: controller.show_frame(self.prev_screen),
-                                 font=(body_font, font_size - 5),
+                                 font=(BODY_FONT, FONT_SIZE - 5),
                                  image=back_img,
                                  compound=TOP,
-                                 bg=setting_color,
-                                 fg=body_color,
-                                 activebackground=setting_sel,
-                                 highlightcolor=body_color,
+                                 bg=SETTING_COLOR,
+                                 fg=BODY_COLOR,
+                                 activebackground=SETTING_SEL,
+                                 highlightcolor=BODY_COLOR,
                                  overrelief=tk.SUNKEN,
                                  padx=0, pady=0)
         self.back_button.place(relx=0, rely=0, anchor=tk.NW)
@@ -188,19 +202,28 @@ class tutor_screen(tk.Frame):
                                  text="Recap",
                                  image=recap_img,
                                  compound=TOP,
-                                 bg=setting_color,
-                                 fg=body_color,
-                                 font=(body_font, font_size-5),
-                                 activebackground=setting_sel,
-                                 highlightcolor=body_color,
+                                 bg=SETTING_COLOR,
+                                 fg=BODY_COLOR,
+                                 font=(BODY_FONT, FONT_SIZE-5),
+                                 activebackground=SETTING_SEL,
+                                 highlightcolor=BODY_COLOR,
                                  overrelief=tk.SUNKEN,
                                  padx=0, pady=0)
         self.recap.place(relx=0, rely=1, anchor=tk.SW)
+
+    def print_desc(self, char=1):
+        self.description.config(text=self.string[:char])
+        if char < len(self.string):
+            root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
+        if char >= len(self.string):
+            self.choice_2.place(relx=0.55, rely=0.75, anchor=tk.W)
+            self.choice_1.place(relx=0.45, rely=0.75, anchor=tk.E)
 
     def set_prev_screen(self, prev_screen, prev_name):
         self.prev_screen = prev_screen
         self.prev_name = prev_name
         self.back_button.configure(text=f"Back to\n{self.prev_name}")
+        self.print_desc()
 
 class name_screen(tk.Frame):
     def __init__(self, parent, controller):
@@ -209,17 +232,17 @@ class name_screen(tk.Frame):
         # options
         # tutorial
         # INSERT LOGO/BUTTON
-        self.tutorial = tk.Label(self, text="How to Play", bg=bg_color, fg=body_color, font=(body_font, font_size-5))
+        self.tutorial = tk.Label(self, text="How to Play", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE-5))
         self.tutorial.place(relx=0.8, rely=0.95)
         # text settigns
         # INSERT LOGO/BUTTON
-        self.t_settings = tk.Label(self, text="Text Settings", bg=bg_color, fg=body_color, font=(body_font,
-                                                                                                 font_size-5))
+        self.t_settings = tk.Label(self, text="Text Settings", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT,
+                                                                                                 FONT_SIZE-5))
         self.t_settings.place(relx=0.9, rely=0.95)
         # back
         # INSERT LOGO/BUTTON
-        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=bg_color, fg=body_color,
-                             font=(body_font, font_size-5))
+        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=BG_COLOR, fg=BODY_COLOR,
+                             font=(BODY_FONT, FONT_SIZE-5))
         self.back.place(relx=0, rely=0.1)
 
 class text_screen(tk.Frame):
@@ -229,8 +252,8 @@ class text_screen(tk.Frame):
         # options
         # back
         # INSERT LOGO/BUTTON
-        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=bg_color, fg=body_color,
-                             font=(body_font, font_size))
+        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=BG_COLOR, fg=BODY_COLOR,
+                             font=(BODY_FONT, FONT_SIZE))
         self.back.place(relx=0, rely=0.1)
 
 class game_screen(tk.Frame):
@@ -240,21 +263,21 @@ class game_screen(tk.Frame):
         # options
         # tutorial
         # INSERT LOGO/BUTTON
-        self.tutorial = tk.Label(self, text="How to Play", bg=bg_color, fg=body_color, font=(body_font, font_size-5))
+        self.tutorial = tk.Label(self, text="How to Play", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE-5))
         self.tutorial.place(relx=0.8, rely=0.95)
         # text settings
         # INSERT LOGO/BUTTON
-        self.t_settings = tk.Label(self, text="Text Settings", bg=bg_color, fg=body_color, font=(body_font,
-                                                                                                 font_size-5))
+        self.t_settings = tk.Label(self, text="Text Settings", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT,
+                                                                                                 FONT_SIZE-5))
         self.t_settings.place(relx=0.9, rely=0.95)
         # back
         # INSERT LOGO/BUTTON
-        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=bg_color, fg=body_color,
-                             font=(body_font, font_size-5))
+        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=BG_COLOR, fg=BODY_COLOR,
+                             font=(BODY_FONT, FONT_SIZE-5))
         self.back.place(relx=0, rely=0.1)
         # recap
         # INSERT LOGO/BUTTON
-        self.back = tk.Label(self, text="recap", bg=bg_color, fg=body_color, font=(body_font, font_size-5))
+        self.back = tk.Label(self, text="recap", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE-5))
         self.back.place(relx=0, rely=0.1)
 
 class recap_screen(tk.Frame):
@@ -264,8 +287,8 @@ class recap_screen(tk.Frame):
         # options
         #   back
         # INSERT LOGO/BUTTON
-        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=bg_color, fg=body_color,
-                             font=(body_font, font_size-5))
+        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=BG_COLOR, fg=BODY_COLOR,
+                             font=(BODY_FONT, FONT_SIZE-5))
         self.back.place(relx=0, rely=0.1)
 
 class over_screen(tk.Frame):
@@ -276,27 +299,27 @@ class over_screen(tk.Frame):
 
         # recap
         # INSERT LOGO/BUTTON
-        self.back = tk.Label(self, text="recap", bg=bg_color, fg=body_color, font=(body_font, font_size-5))
+        self.back = tk.Label(self, text="recap", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE-5))
         self.back.place(relx=0, rely=0.1)
         # play again
         # INSERT LOGO/BUTTON
-        self.back = tk.Label(self, text="recap", bg=bg_color, fg=body_color, font=(body_font, font_size-5))
+        self.back = tk.Label(self, text="recap", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE-5))
         self.back.place(relx=0, rely=0.1)
         # back to home
         # INSERT LOGO/BUTTON
-        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=bg_color, fg=body_color, font=(body_font,
-                                                                                                         font_size-5))
+        self.back = tk.Label(self, text="Back to\n[remove from home]", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT,
+                                                                                                         FONT_SIZE-5))
         self.back.place(relx=0, rely=0.1)
 
         # options
         #   tutorial
         # INSERT LOGO/BUTTON
-        self.tutorial = tk.Label(self, text="How to Play", bg=bg_color, fg=body_color, font=(body_font, font_size-5))
+        self.tutorial = tk.Label(self, text="How to Play", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE-5))
         self.tutorial.place(relx=0.8, rely=0.95)
         #   text settigns
         # INSERT LOGO/BUTTON
-        self.t_settings = tk.Label(self, text="Text Settings", bg=bg_color, fg=body_color, font=(body_font,
-                                                                                                 font_size-5))
+        self.t_settings = tk.Label(self, text="Text Settings", bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT,
+                                                                                                 FONT_SIZE-5))
         self.t_settings.place(relx=0.9, rely=0.95)
 
 root = TkinterApp()
