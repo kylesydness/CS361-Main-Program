@@ -64,11 +64,13 @@ class TkinterApp(tk.Tk):
         if not last is None:
             frame.set_prev_screen(last, l_name)
         children = []
+        """
         for child in frame.winfo_children():
             children.append(child)
             child.destroy()
         for c in children:
             c.place(relx=c.number, rely=c.number)
+            """
         frame.tkraise()
 
 class screen(tk.Frame):
@@ -240,9 +242,9 @@ class tutor_screen(screen):
 
         # MAIN TEXT
         self.string = """The Cryptic Necklace is a text-based horror game that gives you the chance to be a character in your own horror story.\n
-            \nFor each story beat, text will be displayed, describing what is happening in the story. Using the button(s) below the displayed text, you can choose how to progress in the story. BEWARE! Once you make a decision, it cannot be undone, and it will affect what happens next.\n
-            \nIf you are unhappy with your decisions, you can exit the game at any time using the “Back to Home” button in the top left corner, but BE WARNED: you will lose all progress you’ve made!\n
-            \nUse the "Recap" button* in the bottom left to see a summary of your previous choices. """
+        For each story beat, text will be displayed, describing what is happening in the story. Using the button(s) below the displayed text, you can choose how to progress in the story. BEWARE! Once you make a decision, it cannot be undone, and it will affect what happens next.\n
+        If you are unhappy with your decisions, you can exit the game at any time using the “Back to Home” button in the top left corner, but BE WARNED: you will lose all progress you’ve made!\n
+        Use the "Recap" button* in the bottom left to see a summary of your previous choices. """
         self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
 
         # EXAMPLE CHOICES
