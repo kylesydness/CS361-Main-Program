@@ -1,3 +1,5 @@
+from tkinter import StringVar
+
 from tkmacosx import Button
 import tkinter as tk
 
@@ -26,6 +28,8 @@ FONT_SIZE = medium_size
 
 FONT_SPEED = medium_speed
 
+PLAYER = ""
+
 
 def change_size(new_size):
     global FONT_SIZE
@@ -35,6 +39,9 @@ def change_speed(new_speed):
     global FONT_SPEED
     FONT_SPEED = new_speed
 
+def new_name(name):
+    global PLAYER
+    PLAYER = name
 
 class TkinterApp(tk.Tk):
     def __init__(self):
@@ -188,7 +195,7 @@ class screen(tk.Frame):
     def set_screen(self, prev_screen, prev_name):
         self.prev_screen = prev_screen
         self.prev_name = prev_name
-        #self.reconfigure()
+        self.reconfigure()
         #self.back_button.configure(text=f"Back to\n{self.prev_name}")
         self.print_desc()
     
@@ -293,7 +300,7 @@ class text_screen(screen):
         # TEXT:
         self.header.config(text="Text speed")
         self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
-        self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
+        self.description.place(relx=0.115, rely=0.22, anchor=tk.NW)
         # OPTIONS:
         self.slow_button = Button(self,text="Slow",
                                   command=lambda: self.print_desc(1, slow_speed),
@@ -415,14 +422,20 @@ class name_screen(screen):
 
         self.string = "Enter your name below: "
 
+        self.p_name = StringVar()
+        if len(PLAYER) > 0:
+            self.p_name.set(PLAYER)
+
+        self.name_entry = tk.Entry(self, width=40, textvariable=self.p_name, font=(BODY_FONT, FONT_SIZE))
+        self.name_entry.place(relx=.5, rely=.52, anchor=tk.CENTER)
+
         # Placements:
         # TEXT:
         self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
         self.description.config(text="string", anchor=tk.CENTER)
-        self.description.place(relx=0.5, rely=0.4, anchor=tk.N)
-        # CHOICES:
-        self.choice_1.config(text="Begin")
-        self.choice_1.place(relx=0.45, rely=0.75, anchor=tk.E)
+        self.description.place(relx=0.5, rely=0.38, anchor=tk.N)
+        # NAME SUBMIT:
+        self.choice_1.config(text="Begin", command=lambda: self.new_game())
         # NAVIGATION:
         self.back_button.place(relx=0, rely=0, anchor=tk.NW)
         self.text_button.place(relx=0.89, rely=0.82)
@@ -433,12 +446,56 @@ class name_screen(screen):
         if char < len(self.string):
             root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
         if char >= len(self.string):
-            self.choice_1.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
+            self.choice_1.place(relx=0.5, rely=0.65, anchor=tk.CENTER)
+
+    def new_game(self):
+        new_name(self.p_name.get())
+        root.show_frame(game_screen, home_screen, "Home")
 
 class game_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
         #tk.Frame.__init__(self, parent)
+        # HEADER
+        self.header.config(text="The Cryptic\nNecklace")
+        self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
+
+        self.name = PLAYER
+
+        # MAIN TEXT
+        self.string = f"Your name is {self.name}"
+        self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
+
+        # EXAMPLE CHOICES
+        self.choice_1.config(text="TBD choice 1")
+        self.choice_2.config(text="TBD choice 2")
+
+        # OPTIONS
+        # back to home
+        self.back_button.place(relx=0, rely=0, anchor=tk.NW)
+
+        #   tutorial
+        self.tutorial_button.config(command=lambda: controller.show_frame(tutor_screen, game_screen, "Game"))
+        self.tutorial_button.place(relx=0.79, rely=0.82)
+
+        #   text settings
+        self.text_button.config(command=lambda: controller.show_frame(text_screen, game_screen, "Game"))
+        self.text_button.place(relx=0.89, rely=0.82)
+
+    def reconfigure(self):
+        # TEXT:
+        self.string = f"Your name is {PLAYER}"
+        self.header.configure(font=(HEADER_FONT, round(FONT_SIZE*2.5)))
+        self.description.configure(font=(BODY_FONT, FONT_SIZE))
+        # CHOICES:
+        self.choice_1.configure(font=(BODY_FONT, FONT_SIZE))
+        self.choice_2.configure(font=(BODY_FONT, FONT_SIZE))
+        # NAVIGATION:
+        self.back_button.configure(font=(BODY_FONT, FONT_SIZE - 5), text="Exit Game")
+        self.recap.configure(font=(BODY_FONT, FONT_SIZE - 5))
+        self.text_button.configure(font=(BODY_FONT, FONT_SIZE - 5))
+        self.tutorial_button.configure(font=(BODY_FONT, FONT_SIZE - 5))
+
 
 class recap_screen(screen):
     def __init__(self, parent, controller):
