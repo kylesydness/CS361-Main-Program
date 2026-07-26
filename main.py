@@ -1,4 +1,7 @@
 from tkinter import StringVar
+
+from docutils.nodes import description
+from docutils.parsers.rst.directives.tables import align
 from tkmacosx import Button
 import tkinter as tk
 import Story as Story
@@ -60,7 +63,7 @@ class TkinterApp(tk.Tk):
 
         self.frames = {}
 
-        for S in (home_screen, tutor_screen, name_screen, text_screen, game_screen, recap_screen, over_screen):
+        for S in (home_screen, tutor_screen, name_screen, text_screen, game_screen, recap_screen, over_screen, confirmation_screen):
             frame = S(display, self)
             self.frames[S] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -543,9 +546,6 @@ class game_screen(screen):
         #Add warning for game reset
         root.show_frame(confirmation_screen)
 
-        root.show_frame(home_screen)
-        self.reset_game()
-
     def reset_game(self):
         self.beat = Story.b1
         self.string = self.beat.text
@@ -653,17 +653,22 @@ class confirmation_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
-        self.header.config(text="The Cryptic\nNecklace")
+        self.configure(background=SETTING_COLOR)
+
+        self.header.config(text="The Cryptic\nNecklace", bg=SETTING_COLOR)
         self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
 
-        self.string = "Are you sure?\nALL PROGRESS WILL BE LOST."
+        self.description.config(text="Are you sure?\n\nALL PROGRESS WILL BE LOST.",
+                                bg=SETTING_COLOR, anchor=tk.N,
+                                justify=tk.CENTER)
+        self.description.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
 
-        self.c1 = "Yes, go\nHome"
-        self.c2 = "No, back\nto Game"
+        self.choice_1.config(command=lambda: controller.show_frame(home_screen), text="Yes, go\nHome")
+        self.choice_2.config(command=lambda: controller.show_frame(game_screen), text="No, back\nto Game")
 
-        self.description.place(relx=0.2, rely=0.5, anchor=tk.N)
-        self.choice_1.place(relx=0.45, rely=0.8, anchor=tk.NE)
-        self.choice_2.place(relx=0.55, rely=0.8, anchor=tk.NW)
+        self.choice_1.place(relx=0.45, rely=0.6, anchor=tk.NE)
+        self.choice_2.place(relx=0.55, rely=0.6, anchor=tk.NW)
+
 
 root = TkinterApp()
 root.minsize(720, 400)
