@@ -541,6 +541,8 @@ class game_screen(screen):
 
     def exit_game(self):
         #Add warning for game reset
+        root.show_frame(confirmation_screen)
+
         root.show_frame(home_screen)
         self.reset_game()
 
@@ -646,6 +648,22 @@ class over_screen(screen):
 
     def ending(self, end):
         self.string = end
+
+class confirmation_screen(screen):
+    def __init__(self, parent, controller):
+        super().__init__(parent, controller)
+
+        self.header.config(text="The Cryptic\nNecklace")
+        self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
+
+        self.string = "Are you sure?\nALL PROGRESS WILL BE LOST."
+
+        self.c1 = "Yes, go\nHome"
+        self.c2 = "No, back\nto Game"
+
+        self.description.place(relx=0.2, rely=0.5, anchor=tk.N)
+        self.choice_1.place(relx=0.45, rely=0.8, anchor=tk.NE)
+        self.choice_2.place(relx=0.55, rely=0.8, anchor=tk.NW)
 
 root = TkinterApp()
 root.minsize(720, 400)
