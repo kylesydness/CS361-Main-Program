@@ -68,7 +68,6 @@ class TkinterApp(tk.Tk):
 
     def show_frame(self, screen, last=None, l_name=None):
         frame = self.frames[screen]
-        frame.reconfigure()
         if not last is None:
             frame.set_screen(last, l_name)
         frame.tkraise()
@@ -102,15 +101,16 @@ class screen(tk.Frame):
         self.c2 = "choice 2"
 
         # DESCRIPTION
-        self.description = tk.Label(self, text=self.string, bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT, FONT_SIZE), wraplength=1100, justify=tk.LEFT)
+        self.description = tk.Label(self, text=self.string, bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT,
+                                                                                                   FONT_SIZE), wraplength=1100, justify=tk.LEFT)
 
         # EXAMPLE CHOICES
         self.choice_1 = Button(self,
                                text=self.c1,
                                anchor=tk.CENTER,
                                fg=BODY_COLOR,
-                               bd=5, justify=tk.CENTER,
-                               bg=BUTTON_COLOR,
+                               bd=6, justify=tk.CENTER,
+                               bg=BUTTON_COLOR, bordercolor=BODY_COLOR,
                                activebackground=SELECTED_COLOR,
                                font=(BODY_FONT, FONT_SIZE),
                                highlightthickness=2,
@@ -121,7 +121,7 @@ class screen(tk.Frame):
                                text=self.c2,
                                anchor=tk.CENTER,
                                fg=BODY_COLOR,
-                               bd=5, justify=tk.CENTER,
+                               bd=6, justify=tk.CENTER,
                                bg=BUTTON_COLOR,
                                activebackground=SELECTED_COLOR,
                                font=(BODY_FONT, FONT_SIZE),
@@ -209,8 +209,8 @@ class screen(tk.Frame):
         if char < len(self.string):
             root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
         if char >= len(self.string):
-            self.choice_1.configure(text=self.c1)
-            self.choice_2.configure(text=self.c2)
+            self.choice_1.configure(text=self.c1, state=tk.NORMAL)
+            self.choice_2.configure(text=self.c2, state=tk.NORMAL)
             self.choice_2.place(relx=0.55, rely=0.75, anchor=tk.W)
             self.choice_1.place(relx=0.45, rely=0.75, anchor=tk.E)
 
@@ -317,7 +317,7 @@ class text_screen(screen):
         self.slow_button = Button(self,text="Slow",
                                   command=lambda: self.print_desc(1, slow_speed),
                                fg=BODY_COLOR, bg=BUTTON_COLOR,
-                               bd=5, justify=tk.CENTER,
+                               bd=6, justify=tk.CENTER,
                                activebackground=SELECTED_COLOR,
                                font=(BODY_FONT, FONT_SIZE),
                                highlightthickness=2,
@@ -328,7 +328,7 @@ class text_screen(screen):
         self.med_speed_button = Button(self, text="Medium",
                                        command=lambda: self.print_desc(1, medium_speed),
                                   fg=BODY_COLOR, bg=BUTTON_COLOR,
-                                  bd=5, justify=tk.CENTER,
+                                  bd=6, justify=tk.CENTER,
                                   activebackground=SELECTED_COLOR,
                                   font=(BODY_FONT, FONT_SIZE),
                                   highlightthickness=2,
@@ -339,7 +339,7 @@ class text_screen(screen):
         self.fast_button = Button(self, text="Fast",
                                   command=lambda: self.print_desc(1, fast_speed),
                                   fg=BODY_COLOR, bg=BUTTON_COLOR,
-                                  bd=5, justify=tk.CENTER,
+                                  bd=6, justify=tk.CENTER,
                                   activebackground=SELECTED_COLOR,
                                   font=(BODY_FONT, FONT_SIZE),
                                   highlightthickness=2,
@@ -365,7 +365,7 @@ class text_screen(screen):
         self.small_button = Button(self, text="Small",
                                     command=lambda: self.resize(small_size),
                                     fg=BODY_COLOR, bg=BUTTON_COLOR,
-                                    bd=5, justify=tk.CENTER, anchor=tk.CENTER,
+                                    bd=6, justify=tk.CENTER, anchor=tk.CENTER,
                                     activebackground=SELECTED_COLOR,
                                     font=(BODY_FONT, small_size),
                                     highlightthickness=2,
@@ -376,7 +376,7 @@ class text_screen(screen):
         self.med_size_button = Button(self, text="Medium",
                                         command=lambda: self.resize(medium_size),
                                         fg=BODY_COLOR, bg=BUTTON_COLOR,
-                                        bd=5, justify=tk.CENTER, anchor=tk.CENTER,
+                                        bd=6, justify=tk.CENTER, anchor=tk.CENTER,
                                         activebackground=SELECTED_COLOR,
                                         font=(BODY_FONT, medium_size),
                                         highlightthickness=2,
@@ -387,7 +387,7 @@ class text_screen(screen):
         self.large_button = Button(self, text="Large",
                                     command=lambda: self.resize(large_size),
                                     fg=BODY_COLOR, bg=BUTTON_COLOR,
-                                    bd=5, justify = tk.CENTER, anchor=tk.CENTER,
+                                    bd=6, justify = tk.CENTER, anchor=tk.CENTER,
                                     activebackground=SELECTED_COLOR,
                                     font=(BODY_FONT, large_size),
                                     highlightthickness=2,
@@ -399,8 +399,8 @@ class text_screen(screen):
         self.back_button.place(relx=0, rely=0, anchor=tk.NW)
 
     def print_desc(self, char: int = 1, font_speed=None):
-        if char == 1:
-            self.reconfigure()
+        #if char == 1:
+            #self.reconfigure()
         if not font_speed is None:
             change_speed(font_speed)
         self.description.config(text=self.string[:char])
@@ -440,7 +440,7 @@ class name_screen(screen):
         if len(PLAYER) > 0:
             self.p_name.set(PLAYER)
 
-        self.name_entry = tk.Entry(self, width=40, textvariable=self.p_name, font=(BODY_FONT, FONT_SIZE))
+        self.name_entry = tk.Entry(self, width=40, text=self.p_name, font=(BODY_FONT, FONT_SIZE))
         self.name_entry.place(relx=.5, rely=.52, anchor=tk.CENTER)
 
         # Placements:
@@ -586,7 +586,7 @@ class over_screen(screen):
         self.recap = Button(self, text="Full Recap",
                                    command=lambda: controller.show_frame(recap_screen, over_screen, "Game"),
                                    fg=BODY_COLOR, bg=BUTTON_COLOR,
-                                   bd=5, justify=tk.CENTER,
+                                   bd=6, justify=tk.CENTER,
                                    activebackground=SELECTED_COLOR,
                                    font=(BODY_FONT, small_size),
                                    highlightthickness=2,
@@ -596,7 +596,7 @@ class over_screen(screen):
         self.replay = Button(self, text="Play Again",
                                       command=lambda: controller.show_frame(name_screen, home_screen, "Home"),
                                       fg=BODY_COLOR, bg=BUTTON_COLOR,
-                                      bd=5, justify=tk.CENTER,
+                                      bd=6, justify=tk.CENTER,
                                       activebackground=SELECTED_COLOR,
                                       font=(BODY_FONT, medium_size),
                                       highlightthickness=2,
@@ -606,13 +606,12 @@ class over_screen(screen):
         self.home = Button(self, text="Home",
                                    command=lambda: controller.show_frame(home_screen),
                                    fg=BODY_COLOR, bg=BUTTON_COLOR,
-                                   bd=5, anchor=tk.CENTER,
+                                   bd=6, anchor=tk.CENTER,
                                    activebackground=SELECTED_COLOR,
                                    font=(BODY_FONT, large_size),
                                    highlightthickness=2,
                                    padx=3, pady=3,
                                    overrelief=tk.SUNKEN)
-
 
         #   tutorial
         self.tutorial_button.config(command=lambda: controller.show_frame(tutor_screen, over_screen, "Game"))
