@@ -85,6 +85,7 @@ class TkinterApp(tk.Tk):
         frame.string = ending
         frame.reconfigure()
         frame.tkraise()
+        frame.print_desc()
 
 
 class screen(tk.Frame):
@@ -202,6 +203,9 @@ class screen(tk.Frame):
 
     def print_desc(self, char=1):
         self.description.config(text=self.string[:char])
+        if char == 1:
+            self.choice_1.place_forget()
+            self.choice_2.place_forget()
         if char < len(self.string):
             root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
         if char >= len(self.string):
@@ -271,8 +275,8 @@ Use the "Recap" button* in the bottom left to see a summary of your previous cho
         self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
 
         # EXAMPLE CHOICES
-        self.choice_1.configure(text="Example\nchoice 1")
-        self.choice_2.configure(text="Example\nchoice 2")
+        self.c1 = "Example\nchoice 1"
+        self.c2 = "Example\nchoice 2"
 
         # RECAP NOTE
         self.recap_note = tk.Label(self,
@@ -459,6 +463,8 @@ class name_screen(screen):
 
     def print_desc(self, char=1):
         self.description.config(text=self.string[:char])
+        if char ==1:
+            self.choice_1.place_forget()
         if char < len(self.string):
             root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
         if char >= len(self.string):
@@ -492,8 +498,8 @@ class game_screen(screen):
         self.description.place(relx=0.115, rely=0.3, anchor=tk.NW)
 
         # CHOICES
-        self.c1 = self.beat.choices[0].text
-        self.c2 = self.beat.choices[1].text
+        self.c1 = self.beat.choices[0]
+        self.c2 = self.beat.choices[1]
         self.choice_1.config(command=lambda: self.new_beat(0))
         self.choice_2.config(command=lambda: self.new_beat(1))
 
@@ -523,8 +529,8 @@ class game_screen(screen):
             self.game_over()
 
         else:
-            self.c1 = self.beat.choices[0].text
-            self.c2 = self.beat.choices[1].text
+            self.c1 = self.beat.choices[0]
+            self.c2 = self.beat.choices[1]
             self.description.config(text=self.string)
             self.choice_1.config(text=self.c1)
             self.choice_2.config(text=self.c2)
@@ -541,8 +547,8 @@ class game_screen(screen):
     def reset_game(self):
         self.beat = Story.b1
         self.string = self.beat.text
-        self.c1 = self.beat.choices[0].text
-        self.c2 = self.beat.choices[1].text
+        self.c1 = self.beat.choices[0]
+        self.c2 = self.beat.choices[1]
         self.reconfigure()
 
 class recap_screen(screen):
@@ -550,7 +556,13 @@ class recap_screen(screen):
         super().__init__(parent, controller)
         #tk.Frame.__init__(self, parent)
 
+        self.string = "Your choices will display here"
+
         self.header.config(text="Your Choices")
+        self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
+        self.back_button.place(relx=0, rely=0, anchor=tk.NW)
+
+        self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
 
 class over_screen(screen):
     def __init__(self, parent, controller):
@@ -562,7 +574,7 @@ class over_screen(screen):
         self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
 
         # PARTING WORDS
-        self.description.place(relx=0.5, rely=0.4, anchor=tk.N)
+        self.description.place(relx=0.5, rely=0.35, anchor=tk.N)
 
         # GAME OVER:
         self.header2 = tk.Label(self,
@@ -603,11 +615,11 @@ class over_screen(screen):
 
 
         #   tutorial
-        self.tutorial_button.config(command=lambda: controller.show_frame(tutor_screen, game_screen, "Game"))
+        self.tutorial_button.config(command=lambda: controller.show_frame(tutor_screen, over_screen, "Game"))
         self.tutorial_button.place(relx=0.79, rely=0.82)
 
         #   text settings
-        self.text_button.config(command=lambda: controller.show_frame(text_screen, game_screen, "Game"))
+        self.text_button.config(command=lambda: controller.show_frame(text_screen, over_screen, "Game"))
         self.text_button.place(relx=0.89, rely=0.82)
 
     def reconfigure(self):
@@ -620,13 +632,18 @@ class over_screen(screen):
 
     def print_desc(self, char=1):
         self.description.config(text=self.string[:char])
+        if char ==1:
+            self.header2.place_forget()
+            self.recap.place_forget()
+            self.replay.place_forget()
+            self.home.place_forget()
         if char < len(self.string):
             root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
         if char >= len(self.string):
-            self.header2.place(relx=0.5, rely=0.6, anchor=tk.N)
-            self.recap.place(relx=0.4, rely=0.8, anchor=tk.E)
-            self.replay.place(relx=0.5, rely=0.8, anchor=tk.CENTER)
-            self.home.place(relx=0.6, rely=0.8, anchor=tk.W)
+            self.header2.place(relx=0.5, rely=0.5, anchor=tk.N)
+            self.recap.place(relx=0.4, rely=0.75, anchor=tk.E)
+            self.replay.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
+            self.home.place(relx=0.6, rely=0.75, anchor=tk.W)
 
     def ending(self, end):
         self.string = end
