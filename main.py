@@ -66,21 +66,25 @@ class TkinterApp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
         self.show_frame(home_screen)
 
-    def show_frame(self, name, last=None, l_name=None):
-        frame = self.frames[name]
+    def show_frame(self, screen, last=None, l_name=None):
+        frame = self.frames[screen]
         frame.reconfigure()
         if not last is None:
             frame.set_screen(last, l_name)
         frame.tkraise()
-        if frame == home_screen or frame == name_screen:
-            game_screen.reset_game()
-        if frame == over_screen:
-            frame.string = game_screen.string
+        if screen == name_screen:
+            self.frames[game_screen].reset_game()
 
     def new_size(self, size):
         change_size(size)
         for frame in self.frames.values():
             frame.reconfigure()
+
+    def end_game(self, ending):
+        frame = self.frames[over_screen]
+        frame.string = ending
+        frame.reconfigure()
+        frame.tkraise()
 
 
 class screen(tk.Frame):
@@ -490,8 +494,8 @@ class game_screen(screen):
         # CHOICES
         self.c1 = self.beat.choices[0].text
         self.c2 = self.beat.choices[1].text
-        self.choice_1.config(command=lambda: self.new_beat(1))
-        self.choice_2.config(command=lambda: self.new_beat(2))
+        self.choice_1.config(command=lambda: self.new_beat(0))
+        self.choice_2.config(command=lambda: self.new_beat(1))
 
         # OPTIONS
         # back to home
@@ -508,12 +512,7 @@ class game_screen(screen):
 
     def new_beat(self, selection):
 
-        if selection == 1:
-            # select choice 1 path from story file
-            self.beat = self.beat.children[0]
-        if selection == 2:
-            # select choice 2 path from story file
-            self.beat = self.beat.children[1]
+        self.beat = self.beat.children[selection]
 
         # microservice to save recap info
 
@@ -532,7 +531,7 @@ class game_screen(screen):
             self.print_desc()
 
     def game_over(self):
-        root.show_frame(over_screen)
+        root.end_game(self.string)
 
     def exit_game(self):
         #Add warning for game reset
@@ -563,14 +562,13 @@ class over_screen(screen):
         self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
 
         # PARTING WORDS
-        self.description.place(relx=0.115, rely=0.4, anchor=tk.NW)
+        self.description.place(relx=0.5, rely=0.4, anchor=tk.N)
 
         # GAME OVER:
         self.header2 = tk.Label(self,
                                 text="Game over",
                                 bg=BG_COLOR, fg=HEADER_COLOR,
                                 font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
-        self.header2.place(relx=0.5, rely=0.6, anchor=tk.N)
 
         # OPTIONS:
         self.recap = Button(self, text="Full Recap",
@@ -582,7 +580,6 @@ class over_screen(screen):
                                    highlightthickness=2,
                                    padx=3, pady=3,
                                    overrelief=tk.SUNKEN)
-        self.recap.place(relx=0.4, rely=0.8, anchor=tk.E)
 
         self.replay = Button(self, text="Play Again",
                                       command=lambda: controller.show_frame(name_screen, home_screen, "Home"),
@@ -593,7 +590,6 @@ class over_screen(screen):
                                       highlightthickness=2,
                                       padx=3, pady=3,
                                       overrelief=tk.SUNKEN)
-        self.replay.place(relx=0.5, rely=0.8, anchor=tk.CENTER)
 
         self.home = Button(self, text="Home",
                                    command=lambda: controller.show_frame(home_screen),
@@ -604,7 +600,7 @@ class over_screen(screen):
                                    highlightthickness=2,
                                    padx=3, pady=3,
                                    overrelief=tk.SUNKEN)
-        self.home.place(relx=0.6, rely=0.8, anchor=tk.W)
+
 
         #   tutorial
         self.tutorial_button.config(command=lambda: controller.show_frame(tutor_screen, game_screen, "Game"))
@@ -617,10 +613,20 @@ class over_screen(screen):
     def reconfigure(self):
         self.header.config(font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
         self.header2.config(font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
-        self.description.config(font=(BODY_FONT, FONT_SIZE))
+        self.description.config(font=(BODY_FONT, FONT_SIZE), text=self.string)
         self.recap.config(font=(BODY_FONT, FONT_SIZE))
         self.replay.config(font=(BODY_FONT, FONT_SIZE))
         self.home.config(font=(BODY_FONT, FONT_SIZE))
+
+    def print_desc(self, char=1):
+        self.description.config(text=self.string[:char])
+        if char < len(self.string):
+            root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
+        if char >= len(self.string):
+            self.header2.place(relx=0.5, rely=0.6, anchor=tk.N)
+            self.recap.place(relx=0.4, rely=0.8, anchor=tk.E)
+            self.replay.place(relx=0.5, rely=0.8, anchor=tk.CENTER)
+            self.home.place(relx=0.6, rely=0.8, anchor=tk.W)
 
     def ending(self, end):
         self.string = end
