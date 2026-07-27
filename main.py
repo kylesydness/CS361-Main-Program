@@ -1,6 +1,5 @@
 from tkinter import StringVar
 
-from docutils.nodes import description
 from docutils.parsers.rst.directives.tables import align
 from tkmacosx import Button
 import tkinter as tk

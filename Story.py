@@ -1,4 +1,3 @@
-from typing import Type
 
 class Beat:
     def __init__(self, text: str, choices: list, recaps: list, children: list, status: bool = True):
