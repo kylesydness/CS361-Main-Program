@@ -45,9 +45,10 @@ class TkinterApp(tk.Tk):
         for frame in self.frames.values():
             frame.reconfigure()
 
-    def end_game(self, ending):
+    def end_game(self, ending, time):
         frame = self.frames[over_screen]
         frame.string = ending
+        frame.time = time
         frame.reconfigure()
         frame.tkraise()
         frame.print_desc()
@@ -67,8 +68,10 @@ class screen(tk.Frame):
         self.c2 = "choice 2"
 
         # DESCRIPTION
-        self.description = tk.Label(self, text=self.string, bg=BG_COLOR, fg=BODY_COLOR, font=(BODY_FONT,
-                                                                                                   FONT_SIZE), wraplength=1100, justify=tk.LEFT)
+        self.description = tk.Label(self, text=self.string,
+                                    bg=BG_COLOR, fg=BODY_COLOR,
+                                    font=(BODY_FONT, FONT_SIZE),
+                                    wraplength=1100, justify=tk.LEFT)
 
         # EXAMPLE CHOICES
         self.choice_1 = Button(self,
@@ -520,7 +523,11 @@ class game_screen(screen):
             self.print_desc()
 
     def game_over(self):
-        root.end_game(self.string)
+        if timer("timeractive") == "True":
+            timer("timerstsp")
+        game_time = timer("timer read")
+        timer("timer reset")
+        root.end_game(self.string, game_time)
 
     def exit_game(self):
         #Add warning for game reset
@@ -533,6 +540,10 @@ class game_screen(screen):
         self.c2 = self.beat.choices[1]
         self.reconfigure()
         clear_recap()
+        #start/reset timer:
+        timer("timerreset")
+        if timer("timeractive") == "False":
+            timer("timerstsp")
 
 class recap_screen(screen):
     def __init__(self, parent, controller):
@@ -562,6 +573,13 @@ class over_screen(screen):
 
         # PARTING WORDS
         self.description.place(relx=0.5, rely=0.35, anchor=tk.N)
+
+        # TIME RESULTS
+        self.time = 0
+        self.show_time = tk.Label(self, text=f"Time to complete the game: {self.time}",
+                                    bg=BG_COLOR, fg=BODY_COLOR,
+                                    font=(BODY_FONT, FONT_SIZE),
+                                    wraplength=1100, justify=tk.CENTER)
 
         # GAME OVER:
         self.header2 = tk.Label(self,
@@ -612,6 +630,7 @@ class over_screen(screen):
         self.header.config(font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
         self.header2.config(font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
         self.description.config(font=(BODY_FONT, FONT_SIZE), text=self.string)
+        self.show_time.config(font=(BODY_FONT, FONT_SIZE), text=f"Time to complete the game: {self.time}")
         self.recap.config(font=(BODY_FONT, FONT_SIZE))
         self.replay.config(font=(BODY_FONT, FONT_SIZE))
         self.home.config(font=(BODY_FONT, FONT_SIZE))
@@ -620,13 +639,15 @@ class over_screen(screen):
         self.description.config(text=self.string[:char])
         if char ==1:
             self.header2.place_forget()
+            self.show_time.place_forget()
             self.recap.place_forget()
             self.replay.place_forget()
             self.home.place_forget()
         if char < len(self.string):
             root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
         if char >= len(self.string):
-            self.header2.place(relx=0.5, rely=0.5, anchor=tk.N)
+            self.header2.place(relx=0.5, rely=0.45, anchor=tk.N)
+            self.show_time.place(relx=0.5, rely=0.6, anchor=tk.N)
             self.recap.place(relx=0.4, rely=0.75, anchor=tk.E)
             self.replay.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
             self.home.place(relx=0.6, rely=0.75, anchor=tk.W)

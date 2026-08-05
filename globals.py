@@ -30,8 +30,18 @@ FONT_SPEED = medium_speed
 # Name:
 PLAYER = ""
 
-# MICROSERVICE CONNECTIONS:
+def change_size(new_size):
+    global FONT_SIZE
+    FONT_SIZE = new_size
+
+def change_speed(new_speed):
+    global FONT_SPEED
+    FONT_SPEED = new_speed
+
+
+# MICROSERVICES:
 context = zmq.Context()
+
 # Random Name Generator:
 RNG = context.socket(zmq.REQ)
 RNG.connect("tcp://localhost:5555")
@@ -87,11 +97,10 @@ def clear_recap():
     response = RECAP.recv_string()
     return response
 
-def change_size(new_size):
-    global FONT_SIZE
-    FONT_SIZE = new_size
+#Timer:
+TMR = context.socket(zmq.REQ)
+TMR.connect("tcp://localhost:8463")
 
-def change_speed(new_speed):
-    global FONT_SPEED
-    FONT_SPEED = new_speed
-
+def timer(command):
+    TMR.send_string(command)
+    return TMR.recv_string()
