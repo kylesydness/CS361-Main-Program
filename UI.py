@@ -527,7 +527,8 @@ class game_screen(screen):
             timer("timerstsp")
         game_time = timer("timer read")
         timer("timer reset")
-        root.end_game(self.string, game_time)
+        reaction = react(self.beat.children[0])
+        root.end_game(reaction + "!\n" + self.string, game_time)
 
     def exit_game(self):
         #Add warning for game reset
@@ -572,7 +573,7 @@ class over_screen(screen):
         self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
 
         # PARTING WORDS
-        self.description.place(relx=0.5, rely=0.35, anchor=tk.N)
+        self.description.place(relx=0.5, rely=0.3, anchor=tk.N)
 
         # TIME RESULTS
         self.time = 0
@@ -629,7 +630,7 @@ class over_screen(screen):
     def reconfigure(self):
         self.header.config(font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
         self.header2.config(font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
-        self.description.config(font=(BODY_FONT, FONT_SIZE), text=self.string)
+        self.description.config(font=(BODY_FONT, FONT_SIZE), text=self.string, anchor = tk.N, justify=tk.CENTER)
         self.show_time.config(font=(BODY_FONT, FONT_SIZE), text=f"Time to complete the game: {self.time}")
         self.recap.config(font=(BODY_FONT, FONT_SIZE))
         self.replay.config(font=(BODY_FONT, FONT_SIZE))

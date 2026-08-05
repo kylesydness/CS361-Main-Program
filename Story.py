@@ -7,7 +7,7 @@ class Beat:
         self.children = children   #next beat based on children
         self.status = status       #if true, game is still active, if false, game over
 
-e1 = Beat("You keep walking and continue your day like normal.", [], [], [], False)
+e1 = Beat("You keep walking and continue your day like normal.", [], [], ["good"], False)
 
 b2 = Beat("You pick up the necklace. It's heavier than you expected. Upon closer inspection, the bird looks like a raven, or maybe a crow? Its wings are spread and in its talons is a horseshoe with some tiny engraving along it. It's definitely not English, so you can't makeout what it says.",
           ["Put the\nNecklace on", "Put the Necklace\nin your pocket"], ["You put the Necklace on", "You put the necklace in your pocket"], [0, 0])

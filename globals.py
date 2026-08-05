@@ -19,9 +19,9 @@ small_size = 20
 medium_size = 25
 large_size = 30
 
-slow_speed = 30
+slow_speed = 33
 medium_speed = 15
-fast_speed = 5
+fast_speed = 1
 
 FONT_SIZE = medium_size
 
@@ -97,10 +97,18 @@ def clear_recap():
     response = RECAP.recv_string()
     return response
 
-#Timer:
+# Timer:
 TMR = context.socket(zmq.REQ)
 TMR.connect("tcp://localhost:8463")
 
 def timer(command):
     TMR.send_string(command)
     return TMR.recv_string()
+
+# Reactive Phrases:
+RP = context.socket(zmq.REQ)
+RP.connect("tcp://localhost:6423")
+
+def react(command):
+    RP.send_string("reactphrase" + command)
+    return RP.recv_string()
