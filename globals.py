@@ -1,3 +1,4 @@
+import zmq
 
 # Colors:
 BG_COLOR = "#000000"
@@ -16,15 +17,27 @@ small_size = 20
 medium_size = 25
 large_size = 30
 
-slow_speed = 35
-medium_speed = 20
+slow_speed = 30
+medium_speed = 15
 fast_speed = 5
 
 FONT_SIZE = medium_size
 
 FONT_SPEED = medium_speed
 
+# Name:
 PLAYER = ""
+
+# MICROSERVICE CONNECTIONS:
+context = zmq.Context()
+# Random Name Generator
+RNG = context.socket(zmq.REQ)
+RNG.connect("tcp://localhost:5555")
+
+def get_r_name():
+    RNG.send_string("RandomName")
+    return RNG.recv().decode()
+
 
 def change_size(new_size):
     global FONT_SIZE
@@ -33,8 +46,4 @@ def change_size(new_size):
 def change_speed(new_speed):
     global FONT_SPEED
     FONT_SPEED = new_speed
-
-def new_name(name):
-    global PLAYER
-    PLAYER = name
 

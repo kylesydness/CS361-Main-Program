@@ -414,6 +414,10 @@ class name_screen(screen):
         self.description.place(relx=0.5, rely=0.38, anchor=tk.N)
         # NAME SUBMIT:
         self.choice_1.config(text="Begin", command=lambda: self.new_game())
+        # RANDOM OPTION:
+        self.choice_2.config(text="Random Name", command=lambda: self.random_name(),
+                             font=(BODY_FONT, FONT_SIZE-5),
+                             padx=0, pady=0)
         # NAVIGATION:
         self.back_button.place(relx=0, rely=0, anchor=tk.NW)
 
@@ -429,24 +433,33 @@ class name_screen(screen):
         self.description.config(text=self.string[:char])
         if char ==1:
             self.choice_1.place_forget()
+            self.choice_2.place_forget()
         if char < len(self.string):
             root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
         if char >= len(self.string):
             self.choice_1.place(relx=0.5, rely=0.65, anchor=tk.CENTER)
+            self.choice_2.place(relx=0.7, rely=0.52, anchor=tk.W)
 
     def new_game(self):
         global PLAYER
         PLAYER = self.p_name.get()
-        root.show_frame(game_screen, home_screen, "Home")
+        if len(PLAYER) > 0:
+            root.show_frame(game_screen, home_screen, "Home")
 
     def reconfigure(self):
         self.header.config(font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
         self.name_entry.config(font=(BODY_FONT, FONT_SIZE))
         self.description.config(font=(BODY_FONT, FONT_SIZE))
         self.choice_1.config(font=(BODY_FONT, FONT_SIZE))
+        self.choice_2.config(font=(BODY_FONT, FONT_SIZE))
         self.back_button.config(font=(BODY_FONT, FONT_SIZE-5))
         self.text_button.config(font=(BODY_FONT, FONT_SIZE-5))
         self.tutorial_button.config(font=(BODY_FONT, FONT_SIZE-5))
+
+    def random_name(self):
+        name = get_r_name()
+        name = name.replace("\n", "")
+        self.p_name.set(name)
 
 class game_screen(screen):
     def __init__(self, parent, controller):
