@@ -23,6 +23,9 @@ class TkinterApp(tk.Tk):
 
         self.frames = {}
 
+        # create recap file
+        clear_recap()
+
         for S in (home_screen, tutor_screen, name_screen, text_screen, game_screen, recap_screen, over_screen, confirmation_screen):
             frame = S(display, self)
             self.frames[S] = frame
@@ -199,7 +202,7 @@ class screen(tk.Frame):
 class home_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
-        # tk.Frame.__init__(self, parent)
+
         # HEADER
         self.header.config(text="The Cryptic\nNecklace", font=(HEADER_FONT, 80))
         self.header.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
@@ -224,7 +227,6 @@ class home_screen(screen):
 class tutor_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
-        #tk.Frame.__init__(self, parent)
 
         # HEADER
         self.header.config(text="How to Play")
@@ -267,7 +269,6 @@ Use the "Recap" button* in the bottom left to see a summary of your previous cho
 class text_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
-        #tk.Frame.__init__(self, parent)
         
         self.string = """This is an example of how fast the text will display. Select a different speed from the options below to determine your preferred display speed. """
         
@@ -393,7 +394,6 @@ class text_screen(screen):
 class name_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
-        #tk.Frame.__init__(self, parent)
 
         self.header.config(text="The Cryptic\nNecklace")
 
@@ -464,7 +464,7 @@ class name_screen(screen):
 class game_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
-        #tk.Frame.__init__(self, parent)
+
         # HEADER
         self.header.config(text="The Cryptic\nNecklace")
         self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
@@ -494,12 +494,17 @@ class game_screen(screen):
         self.text_button.config(command=lambda: controller.show_frame(text_screen, game_screen, "Game"))
         self.text_button.place(relx=0.89, rely=0.82)
 
+        # recap option
+        self.recap.config(command=lambda: controller.show_frame(recap_screen, game_screen, "Game"))
+        self.recap.place(relx=.01, rely=0.82)
+
     def new_beat(self, selection):
 
-        self.beat = self.beat.children[selection]
-
         # microservice to save recap info
+        set_step(self.beat.recaps[selection])
 
+        # select next beat
+        self.beat = self.beat.children[selection]
         self.string = self.beat.text.replace("$NAME$", PLAYER)
 
         # if game status is over, run game over function
@@ -527,13 +532,13 @@ class game_screen(screen):
         self.c1 = self.beat.choices[0]
         self.c2 = self.beat.choices[1]
         self.reconfigure()
+        clear_recap()
 
 class recap_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
-        #tk.Frame.__init__(self, parent)
 
-        self.string = "Your choices will display here"
+        self.string = get_recap()
 
         self.header.config(text="Your Choices")
         self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
@@ -541,10 +546,15 @@ class recap_screen(screen):
 
         self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
 
+    def set_screen(self, prev_screen=None, prev_name=None):
+        self.prev_screen = prev_screen
+        self.prev_name = prev_name
+        self.back_button.config(text=f"Back to\nGame")
+        self.description.config(text=get_recap())
+
 class over_screen(screen):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
-        #tk.Frame.__init__(self, parent)
 
         # HEADER
         self.header.config(text="The Cryptic\nNecklace")

@@ -1,4 +1,6 @@
 import zmq
+import json
+from pathlib import Path
 
 # Colors:
 BG_COLOR = "#000000"
@@ -30,7 +32,7 @@ PLAYER = ""
 
 # MICROSERVICE CONNECTIONS:
 context = zmq.Context()
-# Random Name Generator
+# Random Name Generator:
 RNG = context.socket(zmq.REQ)
 RNG.connect("tcp://localhost:5555")
 
@@ -38,6 +40,52 @@ def get_r_name():
     RNG.send_string("RandomName")
     return RNG.recv().decode()
 
+# Data Manager:
+RECAP = context.socket(zmq.REQ)
+RECAP.connect("tcp://localhost:54631")
+step = 0
+cwd = Path(__file__).resolve().parent
+
+def set_step(data):
+    global step
+    request = {
+        "command": "set",
+        "data": {"recap": {step: data}},
+        "cwd": str(cwd)
+    }
+    step += 1
+    RECAP.send_json(request)
+    response = RECAP.recv_string()
+    return response
+
+def get_recap():
+    global step
+    choices = ""
+    request = {
+        "command": "get",
+        "data": ["recap"],
+        "cwd": str(cwd)
+    }
+    RECAP.send_json(request)
+    response = RECAP.recv_string()
+    recap = json.loads(response)["recap"]
+    if not recap is None:
+        for x in range(0, step):
+            choices += recap[str(x)]
+    else: choices = "Your choices will display here"
+    return choices
+
+def clear_recap():
+    request = {
+        "command": "set",
+        "data": {"recap":None},
+        "cwd": str(cwd)
+    }
+    global step
+    step = 0
+    RECAP.send_json(request)
+    response = RECAP.recv_string()
+    return response
 
 def change_size(new_size):
     global FONT_SIZE
