@@ -4,46 +4,7 @@ from docutils.parsers.rst.directives.tables import align
 from tkmacosx import Button
 import tkinter as tk
 import Story as Story
-
-# Colors:
-BG_COLOR = "#000000"
-HEADER_COLOR = "#FF2600"
-BUTTON_COLOR = "#941100"
-SELECTED_COLOR = "#FF2600"
-BODY_COLOR = "#FFFFFF"
-SETTING_COLOR = "#111111"
-SETTING_SEL = "#222222"
-
-# Font styles:
-HEADER_FONT = "Herculanum"
-BODY_FONT = "Bodoni 72"
-
-small_size = 20
-medium_size = 25
-large_size = 30
-
-slow_speed = 35
-medium_speed = 20
-fast_speed = 5
-
-FONT_SIZE = medium_size
-
-FONT_SPEED = medium_speed
-
-PLAYER = ""
-
-
-def change_size(new_size):
-    global FONT_SIZE
-    FONT_SIZE = new_size
-
-def change_speed(new_speed):
-    global FONT_SPEED
-    FONT_SPEED = new_speed
-
-def new_name(name):
-    global PLAYER
-    PLAYER = name
+from globals import *
 
 class TkinterApp(tk.Tk):
     def __init__(self):
@@ -73,7 +34,7 @@ class TkinterApp(tk.Tk):
         if not last is None:
             frame.set_screen(last, l_name)
         frame.tkraise()
-        if screen == name_screen:
+        if screen == game_screen and last == home_screen and l_name == "Home":
             self.frames[game_screen].reset_game()
 
     def new_size(self, size):
@@ -439,6 +400,7 @@ class name_screen(screen):
         self.string = "Enter your name below: "
 
         self.p_name = StringVar()
+        global PLAYER
         if len(PLAYER) > 0:
             self.p_name.set(PLAYER)
 
@@ -473,7 +435,8 @@ class name_screen(screen):
             self.choice_1.place(relx=0.5, rely=0.65, anchor=tk.CENTER)
 
     def new_game(self):
-        new_name(self.p_name.get())
+        global PLAYER
+        PLAYER = self.p_name.get()
         root.show_frame(game_screen, home_screen, "Home")
 
     def reconfigure(self):
@@ -524,7 +487,7 @@ class game_screen(screen):
 
         # microservice to save recap info
 
-        self.string = self.beat.text
+        self.string = self.beat.text.replace("$NAME$", PLAYER)
 
         # if game status is over, run game over function
         if self.beat.status is False:
@@ -533,7 +496,7 @@ class game_screen(screen):
         else:
             self.c1 = self.beat.choices[0]
             self.c2 = self.beat.choices[1]
-            self.description.config(text=self.string)
+            self.description.config(text=self.string.replace("$NAME$", PLAYER))
             self.choice_1.config(text=self.c1)
             self.choice_2.config(text=self.c2)
             self.print_desc()
@@ -547,7 +510,7 @@ class game_screen(screen):
 
     def reset_game(self):
         self.beat = Story.b1
-        self.string = self.beat.text
+        self.string = self.beat.text.replace("$NAME$", PLAYER)
         self.c1 = self.beat.choices[0]
         self.c2 = self.beat.choices[1]
         self.reconfigure()
