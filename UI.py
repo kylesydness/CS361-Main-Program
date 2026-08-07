@@ -178,15 +178,15 @@ class screen(tk.Frame):
         if char < len(self.string):
             root.after(FONT_SPEED, lambda: self.print_desc(char + 1))
         if char >= len(self.string):
-            self.choice_1.configure(text=self.c1, state=tk.NORMAL)
-            self.choice_2.configure(text=self.c2, state=tk.NORMAL)
+            self.choice_1.config(text=self.c1, state=tk.NORMAL, anchor = tk.CENTER, justify = tk.CENTER)
+            self.choice_2.config(text=self.c2, state=tk.NORMAL, anchor = tk.CENTER, justify = tk.CENTER)
             self.choice_2.place(relx=0.55, rely=0.75, anchor=tk.W)
             self.choice_1.place(relx=0.45, rely=0.75, anchor=tk.E)
 
     def set_screen(self, prev_screen=None, prev_name=None):
         self.prev_screen = prev_screen
         self.prev_name = prev_name
-        self.back_button.config(text=f"Back to\n{self.prev_name}")
+        self.back_button.config(text=f"Back to\n{self.prev_name}", anchor = tk.CENTER, justify = tk.CENTER)
         self.print_desc()
     
     def reconfigure(self):
@@ -263,11 +263,11 @@ Use the "Recap" button* in the bottom left to see a summary of your previous cho
         self.description.config(font=(BODY_FONT, FONT_SIZE))
         self.recap_note.config(font=(BODY_FONT, FONT_SIZE))
         # CHOICES:
-        self.choice_1.config(font=(BODY_FONT, FONT_SIZE))
-        self.choice_2.config(font=(BODY_FONT, FONT_SIZE))
+        self.choice_1.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
+        self.choice_2.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
         # NAVIGATION:
-        self.back_button.config(font=(BODY_FONT, FONT_SIZE - 5))
-        self.recap.config(font=(BODY_FONT, FONT_SIZE - 5))
+        self.back_button.config(font=(BODY_FONT, FONT_SIZE - 5), anchor = tk.CENTER, justify = tk.CENTER)
+        self.recap.config(font=(BODY_FONT, FONT_SIZE - 5), anchor = tk.CENTER, justify = tk.CENTER)
 
 class text_screen(screen):
     def __init__(self, parent, controller):
@@ -385,12 +385,9 @@ class text_screen(screen):
         self.description.config(font=(BODY_FONT, FONT_SIZE))
         self.description2.config(font=(BODY_FONT, FONT_SIZE))
 
-        self.slow_button.config(font=(BODY_FONT, FONT_SIZE))
-        self.med_speed_button.config(font=(BODY_FONT, FONT_SIZE))
-        self.fast_button.config(font=(BODY_FONT, FONT_SIZE))
-        self.small_button.config(font=(BODY_FONT, FONT_SIZE))
-        self.med_size_button.config(font=(BODY_FONT, FONT_SIZE))
-        self.large_button.config(font=(BODY_FONT, FONT_SIZE))
+        self.slow_button.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
+        self.med_speed_button.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
+        self.fast_button.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
 
         self.back_button.config(font=(BODY_FONT, FONT_SIZE - 5))
 
@@ -416,7 +413,7 @@ class name_screen(screen):
         self.description.config(anchor=tk.CENTER)
         self.description.place(relx=0.5, rely=0.38, anchor=tk.N)
         # NAME SUBMIT:
-        self.choice_1.config(text="Begin", command=lambda: self.new_game())
+        self.choice_1.config(text="Begin", command=lambda: self.new_game(), anchor = tk.CENTER, justify = tk.CENTER)
         # RANDOM OPTION:
         self.choice_2.config(text="Random Name", command=lambda: self.random_name(),
                              font=(BODY_FONT, FONT_SIZE-5),
@@ -453,8 +450,8 @@ class name_screen(screen):
         self.header.config(font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
         self.name_entry.config(font=(BODY_FONT, FONT_SIZE))
         self.description.config(font=(BODY_FONT, FONT_SIZE))
-        self.choice_1.config(font=(BODY_FONT, FONT_SIZE))
-        self.choice_2.config(font=(BODY_FONT, FONT_SIZE))
+        self.choice_1.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
+        self.choice_2.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
         self.back_button.config(font=(BODY_FONT, FONT_SIZE-5))
         self.text_button.config(font=(BODY_FONT, FONT_SIZE-5))
         self.tutorial_button.config(font=(BODY_FONT, FONT_SIZE-5))
@@ -481,8 +478,8 @@ class game_screen(screen):
         # CHOICES
         self.c1 = self.beat.choices[0]
         self.c2 = self.beat.choices[1]
-        self.choice_1.config(command=lambda: self.new_beat(0))
-        self.choice_2.config(command=lambda: self.new_beat(1))
+        self.choice_1.config(command=lambda: self.new_beat(0), anchor = tk.CENTER, justify = tk.CENTER)
+        self.choice_2.config(command=lambda: self.new_beat(1), anchor = tk.CENTER, justify = tk.CENTER)
 
         # OPTIONS
         # back to home
@@ -518,8 +515,8 @@ class game_screen(screen):
             self.c1 = self.beat.choices[0]
             self.c2 = self.beat.choices[1]
             self.description.config(text=self.string.replace("$NAME$", PLAYER))
-            self.choice_1.config(text=self.c1)
-            self.choice_2.config(text=self.c2)
+            self.choice_1.config(text=self.c1, anchor = tk.CENTER, justify = tk.CENTER)
+            self.choice_2.config(text=self.c2, anchor = tk.CENTER, justify = tk.CENTER)
             self.print_desc()
 
     def game_over(self):
@@ -632,9 +629,9 @@ class over_screen(screen):
         self.header2.config(font=(HEADER_FONT, round(FONT_SIZE * 2.5)))
         self.description.config(font=(BODY_FONT, FONT_SIZE), text=self.string, anchor = tk.N, justify=tk.CENTER)
         self.show_time.config(font=(BODY_FONT, FONT_SIZE), text=f"Time to complete the game: {self.time}")
-        self.recap.config(font=(BODY_FONT, FONT_SIZE))
-        self.replay.config(font=(BODY_FONT, FONT_SIZE))
-        self.home.config(font=(BODY_FONT, FONT_SIZE))
+        self.recap.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
+        self.replay.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
+        self.home.config(font=(BODY_FONT, FONT_SIZE), anchor = tk.CENTER, justify = tk.CENTER)
 
     def print_desc(self, char=1):
         self.description.config(text=self.string[:char])
@@ -670,8 +667,8 @@ class confirmation_screen(screen):
                                 justify=tk.CENTER)
         self.description.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
 
-        self.choice_1.config(command=lambda: controller.show_frame(home_screen), text="Yes, go\nHome")
-        self.choice_2.config(command=lambda: controller.show_frame(game_screen), text="No, back\nto Game")
+        self.choice_1.config(command=lambda: controller.show_frame(home_screen), text="Yes, go\nHome", anchor = tk.CENTER, justify = tk.CENTER)
+        self.choice_2.config(command=lambda: controller.show_frame(game_screen), text="No, back\nto Game", anchor = tk.CENTER, justify = tk.CENTER)
 
         self.choice_1.place(relx=0.45, rely=0.6, anchor=tk.NE)
         self.choice_2.place(relx=0.55, rely=0.6, anchor=tk.NW)

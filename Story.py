@@ -1,3 +1,14 @@
+import zmq
+
+# Connect to cryptogram maker:
+context = zmq.Context()
+CM = context.socket(zmq.REQ)
+CM.connect("tcp://localhost:4454")
+
+def cryptofy(input):
+    CM.send_string(str(input))
+    output = CM.recv()
+    return output.decode()
 
 class Beat:
     def __init__(self, text: str, choices: list, recaps: list, children: list, status: bool = True):
@@ -9,7 +20,10 @@ class Beat:
 
 e1 = Beat("You keep walking and continue your day like normal.", [], [], ["good"], False)
 
-b2 = Beat("You pick up the necklace. It's heavier than you expected. Upon closer inspection, the bird looks like a raven, or maybe a crow? Its wings are spread and in its talons is a horseshoe with some tiny engraving along it. It's definitely not English, so you can't makeout what it says.",
+b2 = Beat("You pick up the necklace. It's heavier than you expected. Upon closer inspection, the bird looks like a "
+          "raven, or maybe a crow? Its wings are spread and in its talons is a horseshoe with some tiny engraving "
+          f"along it. It's definitely not English, but the characters almost look like normal letters: "
+          f"{cryptofy("servant of raum")}.",
           ["Put the\nNecklace on", "Put the Necklace\nin your pocket"], ["You put the Necklace on", "You put the necklace in your pocket"], [0, 0])
 
 b1 = Beat("$NAME$, you are walking through a park one afternoon. The weather is warm, the sun is out, and the grass is "
