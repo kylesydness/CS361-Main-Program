@@ -1,10 +1,8 @@
 from tkinter import StringVar
-
 from docutils.parsers.rst.directives.tables import align
 from tkmacosx import Button
 import tkinter as tk
 import Story as Story
-
 import zmq
 import json
 from pathlib import Path
@@ -269,21 +267,6 @@ class screen(tk.Frame):
                                         overrelief=tk.SUNKEN,
                                         padx=0, pady=0)
 
-    # Placements:
-        # TEXT:
-        # self.header.place(relx=0.5, rely=0.05, anchor=tk.N)
-        # self.description.place(relx=0.115, rely=0.2, anchor=tk.NW)
-        #CHOICES:
-        # self.choice_1.config(text=choice_1)
-        # self.choice_1.place(relx=0.45, rely=0.75, anchor=tk.E)
-        # self.choice_2.config(text=choice_2)
-        # self.choice_2.place(relx=0.55, rely=0.75, anchor=tk.W)
-        #NAVIGATION:
-        # self.back_button.place(relx=0, rely=0, anchor=tk.NW)
-        # self.recap.place(relx=0, rely=1, anchor=tk.SW)
-        # self.text_button.place(relx=0.89, rely=0.82)
-        # self.tutorial_button.place(relx=0.79, rely=0.82)
-
     def print_desc(self, char=1):
         self.description.config(text=self.string[:char])
         if char == 1:
@@ -294,8 +277,8 @@ class screen(tk.Frame):
         if char >= len(self.string):
             self.choice_1.config(text=self.c1, state=tk.NORMAL, anchor = tk.CENTER, justify = tk.CENTER)
             self.choice_2.config(text=self.c2, state=tk.NORMAL, anchor = tk.CENTER, justify = tk.CENTER)
-            self.choice_2.place(relx=0.55, rely=0.75, anchor=tk.W)
-            self.choice_1.place(relx=0.45, rely=0.75, anchor=tk.E)
+            self.choice_2.place(relx=0.55, rely=0.95, anchor=tk.SW)
+            self.choice_1.place(relx=0.45, rely=0.95, anchor=tk.SE)
 
     def set_screen(self, prev_screen=None, prev_name=None):
         self.prev_screen = prev_screen
@@ -364,9 +347,9 @@ Use the "Recap" button* in the bottom left to see a summary of your previous cho
         self.recap_note = tk.Label(self,
                                 text="*The recap button on this page is display only, and is not clickable.",
                                 bg=BG_COLOR, fg=BODY_COLOR,
-                                font=(BODY_FONT, FONT_SIZE),
+                                font=(BODY_FONT, FONT_SIZE-5),
                                 wraplength=1100, justify=tk.LEFT)
-        self.recap_note.place(relx=0.1, rely=.95, anchor=tk.SW)
+        self.recap_note.place(relx=0.1, rely=.99, anchor=tk.SW)
         #Navigation placement:
         self.back_button.place(relx=0, rely=0, anchor=tk.NW)
         self.recap.place(relx=0, rely=1, anchor=tk.SW)
@@ -587,7 +570,7 @@ class game_screen(screen):
 
         # MAIN TEXT
         self.string = self.beat.text # to be replaced with first story beat info
-        self.description.place(relx=0.115, rely=0.3, anchor=tk.NW)
+        self.description.place(relx=0.115, rely=0.25, anchor=tk.NW)
 
         # CHOICES
         self.c1 = self.beat.choices[0]
@@ -653,9 +636,10 @@ class game_screen(screen):
         self.reconfigure()
         clear_recap()
         #start/reset timer:
-        timer("timerreset")
-        if timer("timeractive") == "False":
+        if timer("timeractive") == "True":
             timer("timerstsp")
+        timer("timerreset")
+        timer("timerstsp")
 
 class recap_screen(screen):
     def __init__(self, parent, controller):
